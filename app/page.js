@@ -103,7 +103,7 @@ export default function Home() {
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-8">
-      <div className="max-w-3xl mx-auto space-y-8">
+      <div className="max-w-3xl mx-auto space-y-8 w-full">
 
         {/* Header */}
         <h1 className="text-3xl sm:text-4xl font-bold text-gray-900 tracking-tight">
@@ -159,9 +159,9 @@ export default function Home() {
               {links.map((item) => (
                 <div
                   key={item.code}
-                  className="bg-white p-5 sm:p-6 border rounded-2xl shadow-sm hover:shadow-md transition flex flex-col gap-4 sm:flex-row sm:items-start"
+                  className="bg-white p-5 sm:p-6 border rounded-2xl shadow-sm hover:shadow-md transition flex flex-col gap-4 sm:flex-row sm:items-start overflow-hidden w-full max-w-full"
                 >
-                  <div className="space-y-2 flex-1 min-w-0 overflow-hidden">
+                  <div className="space-y-2 flex-1 min-w-0 pr-0 sm:pr-4">
                     <a
                       href={`/${item.code}`}
                       target="_blank"
@@ -171,7 +171,7 @@ export default function Home() {
                       {baseUrl ? `${baseUrl}/${item.code}` : `/${item.code}`}
                     </a>
 
-                    <p className="text-sm text-gray-600 break-words">
+                    <p className="text-sm text-gray-600 break-words overflow-wrap-anywhere">
                       → {item.target_url}
                     </p>
 
@@ -191,17 +191,17 @@ export default function Home() {
                     </a>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0 w-full sm:w-auto">
                     <button
                       onClick={() => copy(item.code)}
-                      className="w-full sm:w-auto px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition whitespace-nowrap"
+                      className="w-full sm:w-auto px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition whitespace-nowrap flex-shrink-0"
                     >
                       Copy
                     </button>
 
                     <button
                       onClick={() => deleteLink(item.code)}
-                      className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition whitespace-nowrap"
+                      className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition whitespace-nowrap flex-shrink-0"
                     >
                       Delete
                     </button>
