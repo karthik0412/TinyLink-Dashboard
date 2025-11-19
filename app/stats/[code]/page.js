@@ -1,18 +1,37 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
+import { headers } from "next/headers";
 import CopyLinkButton from "@/components/CopyLinkButton";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-function getBaseUrl() {
+async function getBaseUrl() {
+  // First check for explicit base URL configuration
   if (process.env.NEXT_PUBLIC_BASE_URL) {
     return process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "");
   }
+  
+  // Check for Vercel URL (automatically set by Vercel)
   if (process.env.VERCEL_URL) {
     return `https://${process.env.VERCEL_URL}`;
   }
+  
+  // Try to get from request headers (works in production)
+  try {
+    const headersList = await headers();
+    const host = headersList.get("host");
+    const protocol = headersList.get("x-forwarded-proto") || "http";
+    
+    if (host) {
+      return `${protocol}://${host}`;
+    }
+  } catch (error) {
+    // Headers might not be available in some contexts
+  }
+  
+  // Fallback to localhost only in development
   return "http://localhost:3000";
 }
 
@@ -39,7 +58,7 @@ export default async function StatsPage({ params }) {
     notFound();
   }
 
-  const shortUrl = `${getBaseUrl()}/${code}`;
+  const shortUrl = `${await getBaseUrl()}/${code}`;
 
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-8">
