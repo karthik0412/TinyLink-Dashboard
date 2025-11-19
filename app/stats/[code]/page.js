@@ -13,22 +13,36 @@ async function getBaseUrl() {
     return process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "");
   }
   
-  // Check for Vercel URL (automatically set by Vercel)
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  
   // Try to get from request headers (works in production)
   try {
     const headersList = await headers();
-    const host = headersList.get("host");
-    const protocol = headersList.get("x-forwarded-proto") || "http";
     
+    // Check for forwarded host (Vercel and other proxies set this)
+    const forwardedHost = headersList.get("x-forwarded-host");
+    const forwardedProto = headersList.get("x-forwarded-proto");
+    
+    if (forwardedHost) {
+      // Use forwarded protocol if available, otherwise default to https in production
+      const protocol = forwardedProto || (process.env.NODE_ENV === "production" ? "https" : "http");
+      return `${protocol}://${forwardedHost}`;
+    }
+    
+    // Fallback to regular host header
+    const host = headersList.get("host");
     if (host) {
+      // In production, default to https unless we're clearly in development
+      const protocol = forwardedProto || 
+                       (process.env.NODE_ENV === "production" ? "https" : "http");
       return `${protocol}://${host}`;
     }
   } catch (error) {
     // Headers might not be available in some contexts
+    console.error("Error getting base URL from headers:", error);
+  }
+  
+  // Check for Vercel URL (automatically set by Vercel) as fallback
+  if (process.env.VERCEL_URL) {
+    return `https://${process.env.VERCEL_URL}`;
   }
   
   // Fallback to localhost only in development
