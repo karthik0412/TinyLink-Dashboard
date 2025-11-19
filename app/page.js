@@ -159,14 +159,14 @@ export default function Home() {
               {links.map((item) => (
                 <div
                   key={item.code}
-                  className="bg-white p-5 sm:p-6 border rounded-2xl shadow-sm hover:shadow-md transition flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between"
+                  className="bg-white p-5 sm:p-6 border rounded-2xl shadow-sm hover:shadow-md transition flex flex-col gap-4 sm:flex-row sm:items-start"
                 >
-                  <div className="space-y-2 w-full">
+                  <div className="space-y-2 flex-1 min-w-0 overflow-hidden">
                     <a
                       href={`/${item.code}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-blue-600 font-semibold hover:underline break-all"
+                      className="text-blue-600 font-semibold hover:underline break-all block"
                     >
                       {baseUrl ? `${baseUrl}/${item.code}` : `/${item.code}`}
                     </a>
@@ -191,17 +191,17 @@ export default function Home() {
                     </a>
                   </div>
 
-                  <div className="flex flex-col sm:flex-row gap-2 w-full sm:w-auto">
+                  <div className="flex flex-col sm:flex-row gap-2 flex-shrink-0">
                     <button
                       onClick={() => copy(item.code)}
-                      className="w-full sm:w-auto px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
+                      className="w-full sm:w-auto px-4 py-2 bg-gray-200 rounded-lg hover:bg-gray-300 transition whitespace-nowrap"
                     >
                       Copy
                     </button>
 
                     <button
                       onClick={() => deleteLink(item.code)}
-                      className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition"
+                      className="w-full sm:w-auto px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 transition whitespace-nowrap"
                     >
                       Delete
                     </button>
