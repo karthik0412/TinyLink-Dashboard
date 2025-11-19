@@ -1,53 +1,10 @@
 import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { headers } from "next/headers";
-import CopyLinkButton from "@/components/CopyLinkButton";
+import ShortLinkDisplay from "@/components/ShortLinkDisplay";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
-
-async function getBaseUrl() {
-  // First check for explicit base URL configuration
-  if (process.env.NEXT_PUBLIC_BASE_URL) {
-    return process.env.NEXT_PUBLIC_BASE_URL.replace(/\/$/, "");
-  }
-  
-  // Try to get from request headers (works in production)
-  try {
-    const headersList = await headers();
-    
-    // Check for forwarded host (Vercel and other proxies set this)
-    const forwardedHost = headersList.get("x-forwarded-host");
-    const forwardedProto = headersList.get("x-forwarded-proto");
-    
-    if (forwardedHost) {
-      // Use forwarded protocol if available, otherwise default to https in production
-      const protocol = forwardedProto || (process.env.NODE_ENV === "production" ? "https" : "http");
-      return `${protocol}://${forwardedHost}`;
-    }
-    
-    // Fallback to regular host header
-    const host = headersList.get("host");
-    if (host) {
-      // In production, default to https unless we're clearly in development
-      const protocol = forwardedProto || 
-                       (process.env.NODE_ENV === "production" ? "https" : "http");
-      return `${protocol}://${host}`;
-    }
-  } catch (error) {
-    // Headers might not be available in some contexts
-    console.error("Error getting base URL from headers:", error);
-  }
-  
-  // Check for Vercel URL (automatically set by Vercel) as fallback
-  if (process.env.VERCEL_URL) {
-    return `https://${process.env.VERCEL_URL}`;
-  }
-  
-  // Fallback to localhost only in development
-  return "http://localhost:3000";
-}
 
 async function resolveParams(params) {
   if (typeof params?.then === "function") {
@@ -72,8 +29,6 @@ export default async function StatsPage({ params }) {
     notFound();
   }
 
-  const shortUrl = `${await getBaseUrl()}/${code}`;
-
   return (
     <div className="min-h-screen bg-gray-50 px-4 py-6 sm:px-8">
       <div className="max-w-2xl mx-auto">
@@ -86,12 +41,7 @@ export default async function StatsPage({ params }) {
             Short Link
           </h2>
 
-          <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between bg-gray-100 px-4 py-3 rounded-xl">
-            <span className="font-medium text-gray-800 break-words">
-              {shortUrl}
-            </span>
-            <CopyLinkButton shortUrl={shortUrl} />
-          </div>
+          <ShortLinkDisplay code={code} />
         </div>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 sm:gap-6">
