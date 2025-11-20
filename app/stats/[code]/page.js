@@ -2,6 +2,7 @@ import prisma from "@/lib/db";
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import ShortLinkDisplay from "@/components/ShortLinkDisplay";
+import FormattedDate from "@/components/FormattedDate";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -53,16 +54,14 @@ export default async function StatsPage({ params }) {
           <div className="bg-white p-6 rounded-2xl shadow-sm border text-center">
             <h3 className="text-gray-600 text-sm mb-2">Created On</h3>
             <p className="text-lg font-medium text-gray-800">
-              {new Date(link.created_at).toLocaleString()}
+              <FormattedDate date={link.created_at} />
             </p>
           </div>
 
           <div className="bg-white p-6 rounded-2xl shadow-sm border text-center sm:col-span-2">
             <h3 className="text-gray-600 text-sm mb-2">Last Clicked</h3>
             <p className="text-lg font-medium text-gray-800">
-              {link.last_clicked
-                ? new Date(link.last_clicked).toLocaleString()
-                : "Never clicked yet"}
+              <FormattedDate date={link.last_clicked} fallback="Never clicked yet" />
             </p>
           </div>
         </div>

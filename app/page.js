@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import FormattedDate from "@/components/FormattedDate";
 
 export default function Home() {
   const [links, setLinks] = useState([]);
@@ -178,9 +179,7 @@ export default function Home() {
                     <p className="text-xs text-gray-500">
                       Clicks: <b>{item.clicks}</b> ·{" "}
                       Last clicked:{" "}
-                      {item.last_clicked
-                        ? new Date(item.last_clicked).toLocaleString()
-                        : "Never"}
+                      <FormattedDate date={item.last_clicked} fallback="Never" />
                     </p>
 
                     <a
